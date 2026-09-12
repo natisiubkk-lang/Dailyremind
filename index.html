@@ -3,285 +3,275 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily Remind & HKDSE Dashboard</title>
+    <title>HKDSE 2027 Countdown Dashboard</title>
     <style>
         :root {
-            --bg-fresh: #f3f7f6;
-            --block-bg: #ffffff;
-            --text-dark: #2d3748;
-            --text-light: #718096;
-            --accent-fresh: #059669; /* Mint Green */
-            --accent-blue: #3182ce;  /* Fresh Teal/Blue */
-            --accent-alert: #e53e3e; /* Clear Red for closest exam */
-            --border-subtle: #edf2f7;
+            --bg-color: #f4f6f9;
+            --card-bg: #ffffff;
+            --primary-color: #2563eb;
+            --text-main: #1f2937;
+            --text-muted: #4b5563;
+            --accent-red: #dc2626;
+            --border-color: #e5e7eb;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-fresh);
-            color: var(--text-dark);
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-            overflow: hidden; /* Enforces a single-page view */
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 2rem;
+            line-height: 1.5;
         }
 
         header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            flex-shrink: 0;
+            margin-bottom: 2rem;
+            text-align: center;
         }
 
         header h1 {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: var(--text-dark);
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            font-size: 2.25rem;
+            color: var(--primary-color);
         }
 
-        header h1::before {
-            content: '';
-            display: inline-block;
-            width: 8px;
-            height: 18px;
-            background-color: var(--accent-fresh);
-            border-radius: 4px;
-        }
-
-        .current-date-badge {
-            font-size: 0.9rem;
-            color: var(--accent-fresh);
-            background: #e6f4ea;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-weight: 600;
-        }
-
-        /* 1-Page Compact Grid Architecture */
-        .dashboard-grid {
+        /* Two-Column Grid Layout */
+        .dashboard-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 15px;
-            flex: 1;
-            overflow-y: auto;
-            padding-bottom: 10px;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
-        /* Small Blocks Styling */
-        .block-card {
-            background: var(--block-bg);
-            border: 1px solid var(--border-subtle);
-            border-radius: 12px;
-            padding: 16px;
+        .column {
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
-            transition: all 0.2s ease-in-out;
-            position: relative;
+            gap: 1.5rem;
         }
 
-        .block-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(5, 150, 105, 0.05);
-            border-color: #cbd5e0;
+        /* Card Component Styling */
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--border-color);
         }
 
-        /* Color tag accenting the next immediate exam */
-        .block-card.next-up {
-            border-color: var(--accent-alert);
-            background: #fffaf0;
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-main);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
         }
 
-        .block-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 12px;
+        /* Left Column Specifics (Countdown Timers) */
+        .countdown-display {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .time-block {
+            background: var(--bg-color);
+            padding: 0.75rem 0.25rem;
+            border-radius: 8px;
+        }
+
+        .time-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-red);
+        }
+
+        .time-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        /* Right Column Specifics (Timetable Table) */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 0.5rem;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: var(--bg-color);
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
         }
 
         .subject-tag {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            font-weight: 700;
-            color: var(--text-light);
-            letter-spacing: 0.5px;
-        }
-
-        .block-card.next-up .subject-tag {
-            color: var(--accent-alert);
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: var(--accent-blue);
-        }
-
-        .block-card.next-up .status-dot {
-            background-color: var(--accent-alert);
-            animation: pulse 2s infinite;
-        }
-
-        .subject-title {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--text-dark);
-            line-height: 1.4;
-            margin-bottom: 8px;
-        }
-
-        .exam-date-details {
-            font-size: 0.8rem;
-            color: var(--text-light);
-            margin-bottom: 15px;
-        }
-
-        .countdown-display {
-            border-top: 1px dashed var(--border-subtle);
-            padding-top: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-        }
-
-        .days-value {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: var(--accent-fresh);
-            font-variant-numeric: tabular-nums;
-        }
-
-        .block-card.next-up .days-value {
-            color: var(--accent-alert);
-        }
-
-        .days-unit {
-            font-size: 0.8rem;
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            background-color: #eff6ff;
+            color: var(--primary-color);
+            border-radius: 4px;
             font-weight: 500;
-            color: var(--text-light);
-            margin-left: 2px;
+            font-size: 0.875rem;
         }
 
-        .live-hms {
-            font-size: 0.75rem;
-            color: var(--text-light);
-            font-family: monospace;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(229, 62, 62, 0.4); }
-            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(229, 62, 62, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(229, 62, 62, 0); }
-        }
-
-        /* Mobile adaptation adjustments */
-        @media (max-width: 600px) {
-            body { overflow: auto; height: auto; }
-            .dashboard-grid { overflow: visible; }
+        /* Responsive adjustments for smaller screen viewports */
+        @media (max-width: 768px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+            body {
+                padding: 1rem;
+            }
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>DSE 2027 Tracker</h1>
-        <div class="current-date-badge" id="live-today-date">Loading date...</div>
+        <h1>HKDSE 2027 Dashboard</h1>
+        <p>Personalized Tracking & Exam Schedule</p>
     </header>
 
-    <div class="dashboard-grid" id="grid-container">
-        <!-- Compact cards will dynamically generate here -->
+    <div class="dashboard-container">
+        
+        <!-- LEFT COLUMN: Countdowns & Metrics (Half Width) -->
+        <div class="column">
+            <div class="card">
+                <div class="card-title">Time Remaining to HKDSE 2027</div>
+                <div class="countdown-display" id="main-countdown">
+                    <div class="time-block">
+                        <div class="time-number" id="days">00</div>
+                        <div class="time-label">Days</div>
+                    </div>
+                    <div class="time-block">
+                        <div class="time-number" id="hours">00</div>
+                        <div class="time-label">Hrs</div>
+                    </div>
+                    <div class="time-block">
+                        <div class="time-number" id="minutes">00</div>
+                        <div class="time-label">Mins</div>
+                    </div>
+                    <div class="time-block">
+                        <div class="time-number" id="seconds">00</div>
+                        <div class="time-label">Secs</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Syllabus Progress Tracker</div>
+                <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.5rem;">Core subjects combined review progress:</p>
+                <div style="background: var(--border-color); height: 20px; border-radius: 10px; overflow: hidden;">
+                    <div style="background: var(--primary-color); width: 45%; height: 100%;"></div>
+                </div>
+                <p style="text-align: right; font-size: 0.85rem; margin-top: 0.25rem; font-weight: bold;">45% Completed</p>
+            </div>
+        </div>
+
+        <!-- RIGHT COLUMN: Examination Schedule -->
+        <div class="column">
+            <div class="card">
+                <div class="card-title">Official Core Exam Timetable</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Subject / Paper</th>
+                            <th>Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Apr 6, 2027</strong></td>
+                            <td><span class="subject-tag">Written Exams Begin</span></td>
+                            <td>--</td>
+                        </tr>
+                        <tr>
+                            <td>Apr 8, 2027</td>
+                            <td>Chinese Language (1 & 2)</td>
+                            <td>08:30 - 13:00</td>
+                        </tr>
+                        <tr>
+                            <td>Apr 9, 2027</td>
+                            <td>English Language (1 & 2)</td>
+                            <td>08:30 - 12:45</td>
+                        </tr>
+                        <tr>
+                            <td>Apr 10, 2027</td>
+                            <td>English Language (3 Listening)</td>
+                            <td>09:15 - 12:15</td>
+                        </tr>
+                        <tr>
+                            <td>Apr 12, 2027</td>
+                            <td>Mathematics Compulsory (1 & 2)</td>
+                            <td>08:30 - 13:00</td>
+                        </tr>
+                        <tr>
+                            <td>Apr 13, 2027</td>
+                            <td>Citizenship & Social Development</td>
+                            <td>08:30 - 10:30</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Jul 14, 2027</strong></td>
+                            <td><span class="subject-tag" style="background-color: #fef2f2; color: var(--accent-red);">Release of Results</span></td>
+                            <td>Tentative</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
     </div>
 
+    <!-- Live Javascript Countdown Logic -->
     <script>
-        // Core schedule metadata for 2027 DSE core/elective choices
-        const scheduleData = [
-            { id: "chi", category: "Core", name: "Chinese Language (中國語文)", date: new Date("2027-04-08T08:30:00") },
-            { id: "eng", category: "Core", name: "English Language (英國語文)", date: new Date("2027-04-09T08:30:00") },
-            { id: "eng3", category: "Core", name: "English Listening (聆聽綜合)", date: new Date("2027-04-10T09:15:00") },
-            { id: "math", category: "Core", name: "Mathematics Compulsory (數學必修)", date: new Date("2027-04-12T08:30:00") },
-            { id: "chem", category: "Elective", name: "Chemistry (化學)", date: new Date("2027-04-15T08:30:00") },
-            { id: "ict", category: "Elective", name: "ICT (資訊及通訊科技)", date: new Date("2027-04-17T08:30:00") },
-            { id: "bio", category: "Elective", name: "Biology (生物)", date: new Date("2027-04-19T08:30:00") },
-            { id: "phy", category: "Elective", name: "Physics (物理)", date: new Date("2027-04-21T08:30:00") }
-        ];
+        // Set target countdown timestamp to the start of DSE exams (Tentative April 6, 2027)
+        const targetDate = new Date("April 6, 2027 08:30:00").getTime();
 
-        // Renders block shells right away to avoid screen flashes
-        function renderInitialBlocks() {
-            const container = document.getElementById("grid-container");
-            container.innerHTML = "";
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const difference = targetDate - now;
 
-            scheduleData.forEach(item => {
-                const dateOptions = { month: 'short', day: 'numeric', weekday: 'short' };
-                const formattedString = item.date.toLocaleDateString('en-US', dateOptions);
+            if (difference <= 0) {
+                document.getElementById("main-countdown").innerHTML = "<h3>The HKDSE 2027 Examinations Have Started!</h3>";
+                clearInterval(timerInterval);
+                return;
+            }
 
-                const card = document.createElement("div");
-                card.className = "block-card";
-                card.id = `block-${item.id}`;
-                card.innerHTML = `
-                    <div>
-                        <div class="block-header">
-                            <span class="subject-tag">${item.category}</span>
-                            <span class="status-dot"></span>
-                        </div>
-                        <div class="subject-title">${item.name}</div>
-                        <div class="exam-date-details">📅 ${formattedString} · ${item.date.getHours()}:${String(item.date.getMinutes()).padStart(2, '0')}</div>
-                    </div>
-                    <div class="countdown-display">
-                        <div>
-                            <span class="days-value" id="days-${item.id}">--</span>
-                            <span class="days-unit">Days</span>
-                        </div>
-                        <div class="live-hms" id="hms-${item.id}">00:00:00</div>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
+            // Time math calculations 
+            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+            // Output strings into UI, padding with zero values where applicable
+            document.getElementById("days").innerText = days.toString().padStart(2, '0');
+            document.getElementById("hours").innerText = hours.toString().padStart(2, '0');
+            document.getElementById("minutes").innerText = minutes.toString().padStart(2, '0');
+            document.getElementById("seconds").innerText = seconds.toString().padStart(2, '0');
         }
 
-        // Handles precise timer ticking and state shifting (concluded/active/next up)
-        function tickEngine() {
-            const now = new Date();
-            
-            // Format top header date
-            document.getElementById("live-today-date").innerText = now.toLocaleDateString('en-US', { 
-                weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' 
-            });
-
-            // Locate next up target exam
-            let nextUpTarget = scheduleData.find(item => item.date > now);
-
-            scheduleData.forEach(item => {
-                const card = document.getElementById(`block-${item.id}`);
-                const daysElement = document.getElementById(`days-${item.id}`);
-                const hmsElement = document.getElementById(`hms-${item.id}`);
-                
-                if (!card || !daysElement || !hmsElement) return;
-
-                const diff = item.date - now;
-
-                if (diff < 0) {
-                    // Exam finished status
-                    card.classList.remove("next-up");
-                    card.style.opacity = "0.45";
-                    daysElement.innerText = "Done";
-                    hmsElement.innerText = "-- : -- : --";
-                } else {
-                    card.style.opacity = "1";
-                    
-                    // Highlight immediate next exam block
-                    if (item === nextUpTarget) {
-                        card.classList.add("next-up");
-                    } else { card.classList.remove("next-up");}const days = Math.floor(diff / (1000 * 60 * 60 * 24));const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));const secs = Math.floor((diff % (1000 * 60)) / 1000);daysElement.innerText = days;hmsElement.innerText = ${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')};}});}// Initialize dashboard sequencerenderInitialBlocks();tickEngine();setInterval(tickEngine, 1000);
+        // Run immediately and establish recurring loop interval every second
+        updateCountdown();
+        const timerInterval = setInterval(updateCountdown, 1000);
+    </script>
+</body>
+</html>
