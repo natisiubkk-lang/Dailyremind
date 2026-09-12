@@ -6,14 +6,14 @@
     <title>HKDSE 2027 倒數儀表板</title>
     <style>
         :root {
-            --bg-gradient: linear-gradient(135deg, #f3efff 0%, #e8ddff 100%);
-            --panel-bg: rgba(255, 255, 255, 0.85);
-            --banner-bg: #eedeff;
-            --text-primary: #2a1b4e;
-            --text-muted: #5c5370;
+            --bg-gradient: linear-gradient(135deg, #f5f2ff 0%, #eae2ff 100%);
+            --panel-bg: rgba(255, 255, 255, 0.9);
+            --banner-bg: #eddfff;
+            --text-primary: #251749;
+            --text-muted: #5c5470;
             --purple-accent: #7c3aed;
             --purple-bright: #6d28d9;
-            --border-subtle: rgba(216, 190, 255, 0.4);
+            --border-subtle: rgba(216, 190, 255, 0.5);
         }
 
         * {
@@ -31,24 +31,24 @@
             justify-content: center;
             align-items: center;
             padding: 2vh;
-            overflow: hidden; /* Strict no scroll requirement */
+            overflow: hidden; /* Strictly prevents page scrolling */
         }
 
         .dashboard-container {
             width: 100%;
             max-width: 1200px;
-            height: 92vh;
+            height: 90vh;
             background: var(--panel-bg);
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(15px);
             border-radius: 24px;
-            box-shadow: 0 15px 35px rgba(124, 58, 237, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.7);
+            box-shadow: 0 15px 35px rgba(124, 58, 237, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.8);
             display: grid;
-            grid-template-columns: 1.15fr 0.85fr;
+            grid-template-columns: 1.1fr 0.9fr;
             overflow: hidden;
         }
 
-        /* Left Side Layout */
+        /* Left Column Style (Matching uploaded image layout) */
         .left-panel {
             padding: 4vh;
             display: flex;
@@ -61,17 +61,17 @@
         .image-style-banner {
             background-color: var(--banner-bg);
             border-radius: 20px;
-            padding: 6vh 20px;
+            padding: 5vh 20px;
             text-align: center;
             position: relative;
             overflow: hidden;
         }
 
-        /* Decorative radial rings matching user's image background */
+        /* Ambient circle background ripples from reference image */
         .image-style-banner::before, .image-style-banner::after {
             content: '';
             position: absolute;
-            border: 2px solid rgba(124, 58, 237, 0.05);
+            border: 2px solid rgba(124, 58, 237, 0.06);
             border-radius: 50%;
         }
         .image-style-banner::before {
@@ -88,7 +88,7 @@
         }
 
         .banner-title {
-            font-size: 1.3rem;
+            font-size: 1.25rem;
             color: var(--purple-accent);
             font-weight: 600;
             margin-bottom: 2vh;
@@ -100,7 +100,7 @@
             font-weight: 800;
             color: var(--purple-accent);
             line-height: 1;
-            margin-bottom: 3vh;
+            margin-bottom: 2.5vh;
             display: inline-flex;
             align-items: baseline;
         }
@@ -108,7 +108,7 @@
         .banner-days span {
             font-size: 2rem;
             font-weight: 600;
-            margin-left: 6px;
+            margin-left: 4px;
         }
 
         .banner-badge {
@@ -119,34 +119,35 @@
             border-radius: 50px;
             font-size: 1rem;
             font-weight: 500;
-            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.15);
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
         }
 
         .subtitle-tracker {
             text-align: center;
-            background: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.6);
             border: 1px solid var(--border-subtle);
             border-radius: 16px;
-            padding: 2vh;
+            padding: 2.5vh;
         }
 
         .subtitle-tracker h3 {
-            font-size: 1rem;
+            font-size: 0.95rem;
             color: var(--text-muted);
-            margin-bottom: 0.5vh;
-            font-weight: 500;
+            margin-bottom: 0.8vh;
+            font-weight: 600;
         }
 
         .subtitle-tracker p {
-            font-size: 1.4rem;
+            font-size: 1.5rem;
             font-weight: 700;
             color: var(--purple-bright);
+            font-variant-numeric: tabular-nums;
         }
 
-        /* Right Side Layout */
+        /* Right Column Style (Subject Timetable grid) */
         .right-panel {
             padding: 4vh;
-            background: rgba(255, 255, 255, 0.25);
+            background: rgba(255, 255, 255, 0.3);
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -162,9 +163,9 @@
         }
 
         .right-panel h2::after {
-            content: '個人科目';
+            content: '我的應考科目';
             font-size: 0.8rem;
-            background: #eedeec;
+            background: #eddfff;
             color: var(--purple-accent);
             padding: 4px 12px;
             border-radius: 6px;
@@ -173,35 +174,26 @@
         .subject-list {
             display: flex;
             flex-direction: column;
-            gap: 1.5vh;
-            overflow-y: auto;
+            gap: 1.2vh;
+            overflow-y: hidden; /* Fits to screen completely */
             flex: 1;
-            padding-right: 4px;
-        }
-
-        /* Custom minimal scrollbar style if items ever require overflow container containment */
-        .subject-list::-webkit-scrollbar {
-            width: 4px;
-        }
-        .subject-list::-webkit-scrollbar-thumb {
-            background: var(--border-subtle);
-            border-radius: 4px;
         }
 
         .subject-card {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1.8vh 20px;
+            padding: 1.5vh 20px;
             background: #ffffff;
             border-radius: 14px;
             border: 1px solid rgba(220, 200, 255, 0.3);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.01);
+            box-shadow: 0 2px 6px rgba(124, 58, 237, 0.02);
         }
 
         .subject-card.next-up {
             border-color: var(--purple-accent);
-            background: #fbf9ff;
+            background: #fcfaff;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.05);
         }
 
         .card-main-info {
@@ -222,14 +214,15 @@
         }
 
         .card-countdown {
-            font-size: 0.95rem;
+            font-size: 1rem;
             font-weight: 700;
             color: var(--purple-accent);
             background: #f6f1ff;
-            padding: 6px 14px;
-            border-radius: 8px;
+            padding: 8px 16px;
+            border-radius: 10px;
             text-align: right;
             font-variant-numeric: tabular-nums;
+            min-width: 110px;
         }
 
         .subject-card.next-up .card-countdown {
@@ -247,7 +240,7 @@
 <body>
 
     <div class="dashboard-container">
-        <!-- Left Column: Visual Core Banner Tracker -->
+        <!-- Left Side Layout Banner (Matches blueprint) -->
         <div class="left-panel">
             <div class="image-style-banner">
                 <div class="banner-title" id="global-title">距離 2027 DSE 開考還有...</div>
@@ -258,39 +251,40 @@
             </div>
 
             <div class="subtitle-tracker">
-                <h3>最接近科目的精確剩餘時間</h3>
-                <p id="live-precision-timer">00 天 00 時 00 分 00 秒</p>
+                <h3 id="target-sub-title">距離下一科考試精確時間</h3>
+                <p id="live-precision-timer">000 天 00 時 00 分 00 秒</p>
             </div>
         </div>
 
-        <!-- Right Column: Individual Elective & Core Counter Blocks -->
+        <!-- Right Side Layout List -->
         <div class="right-panel">
             <h2>應考科目倒數狀態</h2>
             <div class="subject-list" id="subject-list-target">
-                <!-- Injected via JavaScript -->
+                <!-- Rows injected dynamically -->
             </div>
         </div>
     </div>
 
     <script>
-        // Exact timeline configuration derived from official 2027 HKDSE dataset
+        // Official dates derived from the provided 2027 HKDSE examination table
         const myExamSchedule = [
-            { id: "chi", name: "中國語文 (卷一、卷二)", date: new Date("2027-04-08T08:30:00") },
-            { id: "eng", name: "英國語文 (卷一、卷二)", date: new Date("2027-04-09T08:30:00") },
-            { id: "eng3", name: "英國語文 (卷三 聆聽綜合)", date: new Date("2027-04-10T09:15:00") },
-            { id: "math", name: "數學必修部分 (卷一、卷二)", date: new Date("2027-04-12T08:30:00") },
-            { id: "chem", name: "化學 (卷一、卷二)", date: new Date("2027-04-15T08:30:00") },
-            { id: "ict", name: "資訊及通訊科技 (卷一、卷二)", date: new Date("2027-04-17T08:30:00") },
-            { id: "bio", name: "生物 (卷一、卷二)", date: new Date("2027-04-19T08:30:00") },
-            { id: "phy", name: "物理 (卷一、卷二)", date: new Date("2027-04-21T08:30:00") }
+            { name: "中國語文 (卷一、卷二)", date: new Date("2027-04-08T08:30:00") },
+            { name: "英國語文 (卷一、卷二)", date: new Date("2027-04-09T08:30:00") },
+            { name: "英國語文 (卷三 聆聽綜合)", date: new Date("2027-04-10T09:15:00") },
+            { name: "數學必修部分 (卷一、卷二)", date: new Date("2027-04-12T08:30:00") },
+            { name: "化學 (卷一、卷二)", date: new Date("2027-04-15T08:30:00") },
+            { name: "資訊及通訊科技 (卷一、卷二)", date: new Date("2027-04-17T08:30:00") },
+            { name: "生物 (卷一、卷二)", date: new Date("2027-04-19T08:30:00") },
+            { name: "物理 (卷一、卷二)", date: new Date("2027-04-21T08:30:00") }
         ];
 
         function runLiveUpdate() {
+            // Calculates live time directly from the user's browser relative to the exam date
             const currentTime = new Date();
             const targetContainer = document.getElementById("subject-list-target");
             targetContainer.innerHTML = "";
 
-            // Identify chronological order of upcoming exams
+            // Identify chronological current/next upcoming targets
             let currentTargetExam = null;
             for (let exam of myExamSchedule) {
                 if (exam.date > currentTime) {
@@ -299,11 +293,13 @@
                 }
             }
 
-            // Fallback scenario once all final papers conclude
+            // If all exams have finished
             if (!currentTargetExam) currentTargetExam = myExamSchedule[myExamSchedule.length - 1];
 
-            // 1. Process Left UI Banner (Matches user's uploaded layout blueprint)
+            // 1. Calculations for Left Banner (Tracking to the nearest imminent exam)
             const overallRemainingMs = currentTargetExam.date - currentTime;
+            
             if (overallRemainingMs > 0) {
                 const totalDays = Math.floor(overallRemainingMs / (1000 * 60 * 60 * 24));
-                document.getElementById("global-title").innerText = `距離 ${currentTargetExam.name.split(' ')[0]} 開考還有...`;
+                const totalHours = Math.floor((overallRemainingMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const totalMinutes = Math.floor((overallRemainingMs % (1000 * 60 * 60)) / (1000 * 60));
