@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HKDSE 2026 Exam Countdown Dashboard</title>
+    <title>HKDSE 2027 Exam Countdown Dashboard</title>
     <style>
         :root {
             --bg-color: #f4f7f6;
@@ -129,32 +128,33 @@
 <body>
 
     <header>
-        <h1>HKDSE 2026 Countdown</h1>
+        <h1>HKDSE 2027 Countdown</h1>
         <p>Personalized Exam Schedule & Remaining Time Tracker</p>
     </header>
 
     <div class="dashboard" id="countdown-dashboard">
-        <!-- Exam cards will be dynamically injected here via JS -->
+        <!-- Exam cards dynamically injected here via JS -->
     </div>
 
     <script>
-        // Exam schedule data derived directly from the official 2026 HKDSE Timetable PDF
+        // Updated Exam schedule data derived directly from the official 2027 HKDSE Timetable PDF
         const examSchedule = [
-            { name: "Chinese Language (中國語文 一、二)", date: new Date("2026-04-09T08:30:00") },
-            { name: "English Language (英國語文 一、二)", date: new Date("2026-04-10T08:30:00") },
-            { name: "Mathematics Compulsory Part (數學 必修部分)", date: new Date("2026-04-13T08:30:00") },
-            { name: "Chemistry (化學 一、二)", date: new Date("2026-04-16T08:30:00") },
-            { name: "Biology (生物 一、二)", date: new Date("2026-04-20T08:30:00") },
-            { name: "Physics (物理 一、二)", date: new Date("2026-04-22T08:30:00") },
-            { name: "Information & Communication Technology (資訊及通訊科技)", date: new Date("2026-04-24T08:30:00") }
+            { name: "Chinese Language (中國語文 一、二)", date: new Date("2027-04-08T08:30:00") },
+            { name: "English Language (英國語文 一、二)", date: new Date("2027-04-09T08:30:00") },
+            { name: "English Language 3 (Listening) (英國語文 三 聆聽)", date: new Date("2027-04-10T09:15:00") },
+            { name: "Mathematics Compulsory Part (數學 必修部分 一、二)", date: new Date("2027-04-12T08:30:00") },
+            { name: "Chemistry (化學 一、二)", date: new Date("2027-04-15T08:30:00") },
+            { name: "Information & Communication Technology (資訊及通訊科技 一、二)", date: new Date("2027-04-17T08:30:00") },
+            { name: "Biology (生物 一、二)", date: new Date("2027-04-19T08:30:00") },
+            { name: "Physics (物理 一、二)", date: new Date("2027-04-21T08:30:00") }
         ];
 
         function updateCountdowns() {
             const now = new Date();
             const dashboard = document.getElementById("countdown-dashboard");
-            dashboard.innerHTML = ""; // Clear current list to re-render in sorted order
+            dashboard.innerHTML = ""; 
 
-            // Sort exams: upcoming first (closest date first), completed moved to the bottom
+            // Sort exams: upcoming closest first, completed moved to bottom
             const sortedExams = [...examSchedule].sort((a, b) => {
                 const aTimeLeft = a.date - now;
                 const bTimeLeft = b.date - now;
@@ -164,7 +164,6 @@
                 return a.date - b.date;
             });
 
-            // Find the index of the very next active exam
             const closestUpcomingIndex = sortedExams.findIndex(exam => exam.date - now > 0);
 
             sortedExams.forEach((exam, index) => {
@@ -174,7 +173,6 @@
                 let labelText = "Time Remaining";
 
                 if (timeLeft > 0) {
-                    // Calculate days, hours, minutes, seconds
                     const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
                     const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                     const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
@@ -182,7 +180,6 @@
 
                     timerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
                     
-                    // Highlight the absolute closest upcoming exam
                     if (index === closestUpcomingIndex) {
                         cardClass = "closest";
                         labelText = "Next Exam Up";
@@ -193,11 +190,9 @@
                     labelText = "Status";
                 }
 
-                // Format options for clean UI presentation
                 const dateOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
                 const formattedDate = exam.date.toLocaleDateString('en-HK', dateOptions);
 
-                // Construct Card Structure
                 const card = document.createElement("div");
                 card.className = `exam-card ${cardClass}`;
                 card.innerHTML = `
@@ -214,7 +209,6 @@
             });
         }
 
-        // Run immediately and update every 1 second
         updateCountdowns();
         setInterval(updateCountdowns, 1000);
     </script>
