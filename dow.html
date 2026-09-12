@@ -1,319 +1,216 @@
-
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HKDSE 2027 倒數儀表板</title>
+    <title>HKDSE 2027 Exam Countdown Dashboard</title>
     <style>
         :root {
-            --bg-gradient: linear-gradient(135deg, #f5f2ff 0%, #eae2ff 100%);
-            --panel-bg: rgba(255, 255, 255, 0.9);
-            --banner-bg: #eddfff;
-            --text-primary: #251749;
-            --text-muted: #5c5470;
-            --purple-accent: #7c3aed;
-            --purple-bright: #6d28d9;
-            --border-subtle: rgba(216, 190, 255, 0.5);
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-main: #2c3e50;
+            --text-muted: #7f8c8d;
+            --primary: #3498db;
+            --accent-urgent: #e74c3c;
+            --accent-done: #2ecc71;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft JhengHei", Roboto, sans-serif;
-            background: var(--bg-gradient);
-            color: var(--text-primary);
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 2vh;
-            overflow: hidden; /* 嚴格禁止全網頁滾動 */
-        }
-
-        .dashboard-container {
-            width: 100%;
-            max-width: 1200px;
-            height: 90vh;
-            background: var(--panel-bg);
-            backdrop-filter: blur(15px);
-            border-radius: 24px;
-            box-shadow: 0 15px 35px rgba(124, 58, 237, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            display: grid;
-            grid-template-columns: 1.1fr 0.9fr;
-            overflow: hidden;
-        }
-
-        /* 左側欄位樣式（模擬您提供的圖片排版） */
-        .left-panel {
-            padding: 4vh;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            gap: 3vh;
-            border-right: 1px solid var(--border-subtle);
+            align-items: center;
         }
 
-        .image-style-banner {
-            background-color: var(--banner-bg);
-            border-radius: 20px;
-            padding: 5vh 20px;
+        header {
             text-align: center;
-            position: relative;
-            overflow: hidden;
+            margin-bottom: 30px;
         }
 
-        /* 模擬原圖背景的圓圈紋路 */
-        .image-style-banner::before, .image-style-banner::after {
-            content: '';
-            position: absolute;
-            border: 2px solid rgba(124, 58, 237, 0.06);
-            border-radius: 50%;
-        }
-        .image-style-banner::before {
-            width: 140px;
-            height: 140px;
-            bottom: -50px;
-            left: -50px;
-        }
-        .image-style-banner::after {
-            width: 180px;
-            height: 180px;
-            top: -50px;
-            right: -50px;
+        header h1 {
+            margin: 0 0 10px 0;
+            font-size: 2.5rem;
+            color: #1a252f;
         }
 
-        .banner-title {
-            font-size: 1.25rem;
-            color: var(--purple-accent);
-            font-weight: 600;
-            margin-bottom: 2vh;
-            letter-spacing: 0.5px;
+        header p {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 1.1rem;
         }
 
-        .banner-days {
-            font-size: 6rem;
-            font-weight: 800;
-            color: var(--purple-accent);
-            line-height: 1;
-            margin-bottom: 2.5vh;
-            display: inline-flex;
-            align-items: baseline;
+        .dashboard {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
-        .banner-days span {
-            font-size: 2rem;
-            font-weight: 600;
-            margin-left: 4px;
+        .exam-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 6px solid var(--primary);
+            transition: transform 0.2s ease;
         }
 
-        .banner-badge {
-            display: inline-block;
-            background: var(--purple-accent);
-            color: #ffffff;
-            padding: 10px 24px;
-            border-radius: 50px;
-            font-size: 1rem;
-            font-weight: 500;
-            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
+        .exam-card:hover {
+            transform: translateY(-2px);
         }
 
-        .subtitle-tracker {
-            text-align: center;
-            background: rgba(255, 255, 255, 0.6);
-            border: 1px solid var(--border-subtle);
-            border-radius: 16px;
-            padding: 2.5vh;
+        .exam-card.closest {
+            border-left-color: var(--accent-urgent);
+            background: #fff5f5;
         }
 
-        .subtitle-tracker h3 {
+        .exam-card.completed {
+            border-left-color: var(--accent-done);
+            opacity: 0.7;
+        }
+
+        .exam-info h2 {
+            margin: 0 0 5px 0;
+            font-size: 1.4rem;
+        }
+
+        .exam-info .date-string {
             font-size: 0.95rem;
             color: var(--text-muted);
-            margin-bottom: 0.8vh;
-            font-weight: 600;
         }
 
-        .subtitle-tracker p {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--purple-bright);
-            font-variant-numeric: tabular-nums;
-        }
-
-        /* 右側欄位樣式（科目時間表） */
-        .right-panel {
-            padding: 4vh;
-            background: rgba(255, 255, 255, 0.3);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden; /* 防止右欄本身溢出 */
-        }
-
-        .right-panel h2 {
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin-bottom: 2vh;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-shrink: 0; /* 確保標題不會被壓縮 */
-        }
-
-        .right-panel h2::after {
-            content: '我的應考科目';
-            font-size: 0.8rem;
-            background: #eddfff;
-            color: var(--purple-accent);
-            padding: 4px 12px;
-            border-radius: 6px;
-        }
-
-        .subject-list {
-            display: flex;
-            flex-direction: column;
-            gap: 1vh; /* 縮小間距以適應單頁 */
-            overflow-y: auto; /* 若螢幕太小則允許此區域內部滾動，確保項目一定可見 */
-            flex: 1; /* 自動填滿剩餘空間 */
-            padding-right: 5px;
-        }
-
-        /* 美化內部滾動條（僅在超小螢幕觸發） */
-        .subject-list::-webkit-scrollbar {
-            width: 4px;
-        }
-        .subject-list::-webkit-scrollbar-thumb {
-            background: var(--border-subtle);
-            border-radius: 4px;
-        }
-
-        .subject-card {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.5vh 20px;
-            background: #ffffff;
-            border-radius: 14px;
-            border: 1px solid rgba(220, 200, 255, 0.3);
-            box-shadow: 0 2px 6px rgba(124, 58, 237, 0.02);
-            flex-shrink: 0; /* 防止卡片被壓扁 */
-        }
-
-        .subject-card.next-up {
-            border-color: var(--purple-accent);
-            background: #fcfaff;
-            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.05);
-        }
-
-        .card-main-info {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .subject-title {
-            font-weight: 600;
-            font-size: 1.05rem;
-            color: var(--text-primary);
-        }
-
-        .subject-meta {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-
-        .card-countdown {
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--purple-accent);
-            background: #f6f1ff;
-            padding: 6px 14px;
-            border-radius: 10px;
+        .countdown {
             text-align: right;
             font-variant-numeric: tabular-nums;
-            min-width: 110px;
         }
 
-        .subject-card.next-up .card-countdown {
-            background: var(--purple-accent);
-            color: #ffffff;
+        .countdown-timer {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #2c3e50;
         }
 
-        @media (max-width: 850px) {
-            body { overflow: auto; height: auto; }
-            .dashboard-container { grid-template-columns: 1fr; height: auto; max-height: none; }
-            .left-panel { border-right: none; border-bottom: 1px solid var(--border-subtle); }
+        .exam-card.closest .countdown-timer {
+            color: var(--accent-urgent);
+        }
+
+        .exam-card.completed .countdown-timer {
+            color: var(--accent-done);
+        }
+
+        .countdown-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        @media (max-width: 600px) {
+            .exam-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            .countdown {
+                text-align: left;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div class="dashboard-container">
-        <!-- 左側：主倒數橫幅 -->
-        <div class="left-panel">
-            <div class="image-style-banner">
-                <div class="banner-title" id="global-title">距離 2027 DSE 開考還有...</div>
-                <div class="banner-days" id="global-days">000<span>天</span></div>
-                <div>
-                    <div class="banner-badge" id="global-badge">開考日 → 2027 年 4 月 8 日</div>
-                </div>
-            </div>
+    <header>
+        <h1>HKDSE 2027 Countdown</h1>
+        <p>Personalized Exam Schedule & Remaining Time Tracker</p>
+    </header>
 
-            <div class="subtitle-tracker">
-                <h3 id="target-sub-title">距離下一科考試精確時間</h3>
-                <p id="live-precision-timer">000 天 00 時 00 分 00 秒</p>
-            </div>
-        </div>
-
-        <!-- 右側：科目時間表與倒數 -->
-        <div class="right-panel">
-            <h2>應考科目倒數狀態</h2>
-            <div class="subject-list" id="subject-list-target">
-                <!-- 由 JavaScript 動態生成並渲染 -->
-            </div>
-        </div>
+    <div class="dashboard" id="countdown-dashboard">
+        <!-- Exam cards dynamically injected here via JS -->
     </div>
 
     <script>
-        // 根據 2027 年 DSE 官方時間表建立的目標日期數據（包含卷一開考時間）
-        const myExamSchedule = [
-            { name: "中國語文 (卷一、卷二)", date: new Date("2027-04-08T08:30:00") },
-            { name: "英國語文 (卷一、卷二)", date: new Date("2027-04-09T08:30:00") },
-            { name: "英國語文 (卷三 聆聽綜合)", date: new Date("2027-04-10T09:15:00") },
-            { name: "數學必修部分 (卷一、卷二)", date: new Date("2027-04-12T08:30:00") },
-            { name: "化學 (卷一、卷二)", date: new Date("2027-04-15T08:30:00") },
-            { name: "資訊及通訊科技 (卷一、卷二)", date: new Date("2027-04-17T08:30:00") },
-            { name: "生物 (卷一、卷二)", date: new Date("2027-04-19T08:30:00") },
-            { name: "物理 (卷一、卷二)", date: new Date("2027-04-21T08:30:00") }
+        // Updated Exam schedule data derived directly from the official 2027 HKDSE Timetable PDF
+        const examSchedule = [
+            { name: "Chinese Language (中國語文 一、二)", date: new Date("2027-04-08T08:30:00") },
+            { name: "English Language (英國語文 一、二)", date: new Date("2027-04-09T08:30:00") },
+            { name: "English Language 3 (Listening) (英國語文 三 聆聽)", date: new Date("2027-04-10T09:15:00") },
+            { name: "Mathematics Compulsory Part (數學 必修部分 一、二)", date: new Date("2027-04-12T08:30:00") },
+            { name: "Chemistry (化學 一、二)", date: new Date("2027-04-15T08:30:00") },
+            { name: "Information & Communication Technology (資訊及通訊科技 一、二)", date: new Date("2027-04-17T08:30:00") },
+            { name: "Biology (生物 一、二)", date: new Date("2027-04-19T08:30:00") },
+            { name: "Physics (物理 一、二)", date: new Date("2027-04-21T08:30:00") }
         ];
 
-        function runLiveUpdate() {
-            const currentTime = new Date();
-            const targetContainer = document.getElementById("subject-list-target");
-            
-            // 獲取當前清單中的內容，避免每秒重刷造成閃爍或滾動軸重設
-            const existingCards = targetContainer.children;
-            const isFirstRender = existingCards.length === 0;
+        function updateCountdowns() {
+            const now = new Date();
+            const dashboard = document.getElementById("countdown-dashboard");
+            dashboard.innerHTML = ""; 
 
-            // 尋找下一個即將到來的考試
-            let currentTargetExam = null;
-            for (let exam of myExamSchedule) {
-                if (exam.date > currentTime) {
-                    currentTargetExam = exam;
-                    break;
+            // Sort exams: upcoming closest first, completed moved to bottom
+            const sortedExams = [...examSchedule].sort((a, b) => {
+                const aTimeLeft = a.date - now;
+                const bTimeLeft = b.date - now;
+                
+                if (aTimeLeft < 0 && bTimeLeft >= 0) return 1;
+                if (bTimeLeft < 0 && aTimeLeft >= 0) return -1;
+                return a.date - b.date;
+            });
+
+            const closestUpcomingIndex = sortedExams.findIndex(exam => exam.date - now > 0);
+
+            sortedExams.forEach((exam, index) => {
+                const timeLeft = exam.date - now;
+                let timerText = "";
+                let cardClass = "";
+                let labelText = "Time Remaining";
+
+                if (timeLeft > 0) {
+                    const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+                    timerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+                    
+                    if (index === closestUpcomingIndex) {
+                        cardClass = "closest";
+                        labelText = "Next Exam Up";
+                    }
+                } else {
+                    timerText = "Exam Concluded";
+                    cardClass = "completed";
+                    labelText = "Status";
                 }
-            }
 
-            // 如果所有考試都結束了，停留在最後一科
-            if (!currentTargetExam) currentTargetExam = myExamSchedule[myExamSchedule.length - 1];
+                const dateOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+                const formattedDate = exam.date.toLocaleDateString('en-HK', dateOptions);
 
-            // 1. 計算左側橫幅資料（以最接近的考試為基準）
-            const overallRemainingMs = currentTargetExam.date - currentTime;
-            
-            if (overallRemainingMs > 0) {
-                const totalDays = Math.floor(overallRemainingMs / (1000 * 60 * 60 * 24));
-                const totalHours = Math.floor((overallRemainingMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const card = document.createElement("div");
+                card.className = `exam-card ${cardClass}`;
+                card.innerHTML = `
+                    <div class="exam-info">
+                        <h2>${exam.name}</h2>
+                        <div class="date-string">📅 ${formattedDate}</div>
+                    </div>
+                    <div class="countdown">
+                        <div class="countdown-timer">${timerText}</div>
+                        <div class="countdown-label">${labelText}</div>
+                    </div>
+                `;
+                dashboard.appendChild(card);
+            });
+        }
+
+        updateCountdowns();
+        setInterval(updateCountdowns, 1000);
+    </script>
+</body>
+</html>
