@@ -6,15 +6,14 @@
     <title>HKDSE 2027 倒數儀表板</title>
     <style>
         :root {
-            --bg-gradient: linear-gradient(135deg, #f5f3ff 0%, #edd8ff 100%);
-            --card-bg: rgba(255, 255, 255, 0.85);
-            --banner-bg: #f3e8ff;
-            --text-main: #4c1d95;
-            --text-dark: #1e1b4b;
-            --text-muted: #6b7280;
-            --accent-purple: #7c3aed;
-            --accent-purple-dark: #6d28d9;
-            --border-color: rgba(233, 213, 255, 0.6);
+            --bg-gradient: linear-gradient(135deg, #f3efff 0%, #e8ddff 100%);
+            --panel-bg: rgba(255, 255, 255, 0.85);
+            --banner-bg: #eedeff;
+            --text-primary: #2a1b4e;
+            --text-muted: #5c5370;
+            --purple-accent: #7c3aed;
+            --purple-bright: #6d28d9;
+            --border-subtle: rgba(216, 190, 255, 0.4);
         }
 
         * {
@@ -24,303 +23,287 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Microsoft JhengHei, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft JhengHei", Roboto, sans-serif;
             background: var(--bg-gradient);
-            color: var(--text-dark);
+            color: var(--text-primary);
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
-            overflow: hidden; /* Ensures no scrolling */
+            padding: 2vh;
+            overflow: hidden; /* Strict no scroll requirement */
         }
 
-        .container {
+        .dashboard-container {
             width: 100%;
-            max-width: 1100px;
-            height: 100%;
-            max-height: 650px;
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
+            max-width: 1200px;
+            height: 92vh;
+            background: var(--panel-bg);
+            backdrop-filter: blur(12px);
             border-radius: 24px;
-            box-shadow: 0 20px 40px rgba(124, 58, 237, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 15px 35px rgba(124, 58, 237, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.7);
             display: grid;
-            grid-template-columns: 1.1fr 0.9fr;
+            grid-template-columns: 1.15fr 0.85fr;
             overflow: hidden;
         }
 
-        /* Left Column: Countdowns */
-        .left-col {
-            padding: 40px;
+        /* Left Side Layout */
+        .left-panel {
+            padding: 4vh;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            border-right: 1px solid var(--border-color);
+            justify-content: center;
+            gap: 3vh;
+            border-right: 1px solid var(--border-subtle);
         }
 
-        .hero-banner {
+        .image-style-banner {
             background-color: var(--banner-bg);
             border-radius: 20px;
-            padding: 40px 20px;
+            padding: 6vh 20px;
             text-align: center;
             position: relative;
             overflow: hidden;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
         }
 
-        /* Decorative background ripples matching the user's style image */
-        .hero-banner::before, .hero-banner::after {
+        /* Decorative radial rings matching user's image background */
+        .image-style-banner::before, .image-style-banner::after {
             content: '';
             position: absolute;
-            border: 2px solid rgba(124, 58, 237, 0.06);
+            border: 2px solid rgba(124, 58, 237, 0.05);
             border-radius: 50%;
         }
-        .hero-banner::before {
-            width: 120px;
-            height: 120px;
-            bottom: -40px;
-            left: -40px;
+        .image-style-banner::before {
+            width: 140px;
+            height: 140px;
+            bottom: -50px;
+            left: -50px;
         }
-        .hero-banner::after {
-            width: 160px;
-            height: 160px;
-            top: -40px;
-            right: -40px;
+        .image-style-banner::after {
+            width: 180px;
+            height: 180px;
+            top: -50px;
+            right: -50px;
         }
 
-        .hero-title {
-            font-size: 1.25rem;
-            color: var(--accent-purple);
+        .banner-title {
+            font-size: 1.3rem;
+            color: var(--purple-accent);
             font-weight: 600;
-            margin-bottom: 15px;
-            letter-spacing: 1px;
+            margin-bottom: 2vh;
+            letter-spacing: 0.5px;
         }
 
-        .hero-days {
-            font-size: 5.5rem;
+        .banner-days {
+            font-size: 6rem;
             font-weight: 800;
-            color: var(--accent-purple);
+            color: var(--purple-accent);
             line-height: 1;
-            margin-bottom: 20px;
+            margin-bottom: 3vh;
             display: inline-flex;
             align-items: baseline;
-            gap: 5px;
         }
 
-        .hero-days span {
-            font-size: 1.75rem;
+        .banner-days span {
+            font-size: 2rem;
             font-weight: 600;
+            margin-left: 6px;
         }
 
-        .hero-date-badge {
+        .banner-badge {
             display: inline-block;
-            background: var(--accent-purple);
-            color: white;
-            padding: 8px 20px;
+            background: var(--purple-accent);
+            color: #ffffff;
+            padding: 10px 24px;
             border-radius: 50px;
-            font-size: 0.95rem;
+            font-size: 1rem;
             font-weight: 500;
-            box-shadow: 0 4px 10px rgba(124, 58, 237, 0.2);
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.15);
         }
 
-        .secondary-status {
-            background: rgba(255, 255, 255, 0.6);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 20px;
+        .subtitle-tracker {
             text-align: center;
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 2vh;
         }
 
-        .secondary-status h3 {
-            font-size: 1.1rem;
-            color: var(--text-main);
-            margin-bottom: 5px;
+        .subtitle-tracker h3 {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5vh;
+            font-weight: 500;
         }
 
-        .secondary-status p {
+        .subtitle-tracker p {
             font-size: 1.4rem;
             font-weight: 700;
-            color: var(--text-dark);
+            color: var(--purple-bright);
         }
 
-        /* Right Column: Timetable List */
-        .right-col {
-            padding: 40px;
-            background: rgba(255, 255, 255, 0.3);
+        /* Right Side Layout */
+        .right-panel {
+            padding: 4vh;
+            background: rgba(255, 255, 255, 0.25);
             display: flex;
             flex-direction: column;
+            overflow: hidden;
         }
 
-        .right-col h2 {
-            font-size: 1.4rem;
-            color: var(--text-dark);
-            margin-bottom: 25px;
+        .right-panel h2 {
+            font-size: 1.3rem;
             font-weight: 700;
+            margin-bottom: 3vh;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .right-col h2::after {
-            content: '2027 HKDSE';
-            font-size: 0.85rem;
-            background: #ede9fe;
-            color: var(--accent-purple);
+        .right-panel h2::after {
+            content: '個人科目';
+            font-size: 0.8rem;
+            background: #eedeec;
+            color: var(--purple-accent);
             padding: 4px 12px;
             border-radius: 6px;
         }
 
-        .exam-list {
+        .subject-list {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            overflow: hidden; /* Guarantees layout fits one page perfectly */
+            gap: 1.5vh;
+            overflow-y: auto;
+            flex: 1;
+            padding-right: 4px;
         }
 
-        .exam-row {
+        /* Custom minimal scrollbar style if items ever require overflow container containment */
+        .subject-list::-webkit-scrollbar {
+            width: 4px;
+        }
+        .subject-list::-webkit-scrollbar-thumb {
+            background: var(--border-subtle);
+            border-radius: 4px;
+        }
+
+        .subject-card {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 14px 20px;
-            background: white;
+            padding: 1.8vh 20px;
+            background: #ffffff;
             border-radius: 14px;
-            border: 1px solid rgba(233, 213, 255, 0.4);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.01);
-            transition: all 0.3s ease;
+            border: 1px solid rgba(220, 200, 255, 0.3);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.01);
         }
 
-        .exam-row.active-next {
-            border-color: var(--accent-purple);
-            background: #faf5ff;
-            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.05);
+        .subject-card.next-up {
+            border-color: var(--purple-accent);
+            background: #fbf9ff;
         }
 
-        .exam-row.concluded {
-            opacity: 0.5;
-            background: #f9fafb;
-        }
-
-        .subject-info {
+        .card-main-info {
             display: flex;
             flex-direction: column;
             gap: 4px;
         }
 
-        .subject-name {
+        .subject-title {
             font-weight: 600;
             font-size: 1.05rem;
-            color: var(--text-dark);
+            color: var(--text-primary);
         }
 
-        .exam-row.active-next .subject-name {
-            color: var(--accent-purple-dark);
-        }
-
-        .subject-date {
+        .subject-meta {
             font-size: 0.85rem;
             color: var(--text-muted);
         }
 
-        .row-countdown {
+        .card-countdown {
             font-size: 0.95rem;
             font-weight: 700;
-            color: var(--text-main);
-            background: #f5f3ff;
+            color: var(--purple-accent);
+            background: #f6f1ff;
             padding: 6px 14px;
             border-radius: 8px;
-            min-width: 90px;
-            text-align: center;
+            text-align: right;
+            font-variant-numeric: tabular-nums;
         }
 
-        .exam-row.active-next .row-countdown {
-            background: var(--accent-purple);
-            color: white;
+        .subject-card.next-up .card-countdown {
+            background: var(--purple-accent);
+            color: #ffffff;
         }
 
-        .exam-row.concluded .row-countdown {
-            background: #e5e7eb;
-            color: #9ca3af;
-        }
-
-        /* Responsive Layout Adjustments */
         @media (max-width: 850px) {
-            body {
-                overflow: auto;
-                height: auto;
-            }
-            .container {
-                grid-template-columns: 1fr;
-                max-height: none;
-                height: auto;
-            }
-            .left-col {
-                border-right: none;
-                border-bottom: 1px solid var(--border-color);
-                gap: 30px;
-            }
+            body { overflow: auto; height: auto; }
+            .dashboard-container { grid-template-columns: 1fr; height: auto; max-height: none; }
+            .left-panel { border-right: none; border-bottom: 1px solid var(--border-subtle); }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <!-- Left Side: Hero Countdown View -->
-        <div class="left-col">
-            <div class="hero-banner">
-                <div class="hero-title" id="hero-title">距離 2027 DSE 開考還有...</div>
-                <div class="hero-days" id="hero-days">00<span>天</span></div>
+    <div class="dashboard-container">
+        <!-- Left Column: Visual Core Banner Tracker -->
+        <div class="left-panel">
+            <div class="image-style-banner">
+                <div class="banner-title" id="global-title">距離 2027 DSE 開考還有...</div>
+                <div class="banner-days" id="global-days">000<span>天</span></div>
                 <div>
-                    <div class="hero-date-badge" id="hero-badge">首科考試 → 2027年4月8日</div>
+                    <div class="banner-badge" id="global-badge">開考日 → 2027 年 4 月 8 日</div>
                 </div>
             </div>
 
-            <div class="secondary-status">
-                <h3 id="status-title">下一場考試精確倒數</h3>
-                <p id="precise-timer">00天 00時 00分 00秒</p>
+            <div class="subtitle-tracker">
+                <h3>最接近科目的精確剩餘時間</h3>
+                <p id="live-precision-timer">00 天 00 時 00 分 00 秒</p>
             </div>
         </div>
 
-        <!-- Right Side: Clean Subject Schedule List -->
-        <div class="right-col">
-            <h2>應考科目時間表</h2>
-            <div class="exam-list" id="exam-list-container">
-                <!-- Data dynamically inserted here -->
+        <!-- Right Column: Individual Elective & Core Counter Blocks -->
+        <div class="right-panel">
+            <h2>應考科目倒數狀態</h2>
+            <div class="subject-list" id="subject-list-target">
+                <!-- Injected via JavaScript -->
             </div>
         </div>
     </div>
 
     <script>
-        // Official 2027 dates extracted directly from your document
-        const examSchedule = [
-            { name: "中國語文 (一、二)", date: new Date("2027-04-08T08:30:00"), label: "Chinese" },
-            { name: "英國語文 (一、二)", date: new Date("2027-04-09T08:30:00"), label: "English" },
-            { name: "英國語文 (三) 聆聽", date: new Date("2027-04-10T09:15:00"), label: "English 3" },
-            { name: "數學必修部分 (一、二)", date: new Date("2027-04-12T08:30:00"), label: "Mathematics" },
-            { name: "化學 (一、二)", date: new Date("2027-04-15T08:30:00"), label: "Chemistry" },
-            { name: "資訊及通訊科技 (一、二)", date: new Date("2027-04-17T08:30:00"), label: "ICT" },
-            { name: "生物 (一、二)", date: new Date("2027-04-19T08:30:00"), label: "Biology" },
-            { name: "物理 (一、二)", date: new Date("2027-04-21T08:30:00"), label: "Physics" }
+        // Exact timeline configuration derived from official 2027 HKDSE dataset
+        const myExamSchedule = [
+            { id: "chi", name: "中國語文 (卷一、卷二)", date: new Date("2027-04-08T08:30:00") },
+            { id: "eng", name: "英國語文 (卷一、卷二)", date: new Date("2027-04-09T08:30:00") },
+            { id: "eng3", name: "英國語文 (卷三 聆聽綜合)", date: new Date("2027-04-10T09:15:00") },
+            { id: "math", name: "數學必修部分 (卷一、卷二)", date: new Date("2027-04-12T08:30:00") },
+            { id: "chem", name: "化學 (卷一、卷二)", date: new Date("2027-04-15T08:30:00") },
+            { id: "ict", name: "資訊及通訊科技 (卷一、卷二)", date: new Date("2027-04-17T08:30:00") },
+            { id: "bio", name: "生物 (卷一、卷二)", date: new Date("2027-04-19T08:30:00") },
+            { id: "phy", name: "物理 (卷一、卷二)", date: new Date("2027-04-21T08:30:00") }
         ];
 
-        function refreshDashboard() {
-            const now = new Date();
-            const listContainer = document.getElementById("exam-list-container");
-            listContainer.innerHTML = "";
+        function runLiveUpdate() {
+            const currentTime = new Date();
+            const targetContainer = document.getElementById("subject-list-target");
+            targetContainer.innerHTML = "";
 
-            // Find the closest upcoming exam
-            let nextExam = null;
-            for (let exam of examSchedule) {
-                if (exam.date > now) {
-                    nextExam = exam;
+            // Identify chronological order of upcoming exams
+            let currentTargetExam = null;
+            for (let exam of myExamSchedule) {
+                if (exam.date > currentTime) {
+                    currentTargetExam = exam;
                     break;
                 }
             }
 
-            // Default to first exam if all have passed
-            if (!nextExam) nextExam = examSchedule[0];
+            // Fallback scenario once all final papers conclude
+            if (!currentTargetExam) currentTargetExam = myExamSchedule[myExamSchedule.length - 1];
 
-            // 1. Update Left Column Hero Block (Matches style of your uploaded banner image)
-            const globalTimeLeft = nextExam.date - now;
-            if (globalTimeLeft > 0) {
-                const daysLeft = Math.floor(globalTimeLeft / (1000 * 60 * 60 * 24));
+            // 1. Process Left UI Banner (Matches user's uploaded layout blueprint)
+            const overallRemainingMs = currentTargetExam.date - currentTime;
+            if (overallRemainingMs > 0) {
+                const totalDays = Math.floor(overallRemainingMs / (1000 * 60 * 60 * 24));
+                document.getElementById("global-title").innerText = `距離 ${currentTargetExam.name.split(' ')[0]} 開考還有...`;
