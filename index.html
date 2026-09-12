@@ -1,1 +1,222 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HKDSE 2026 Exam Countdown Dashboard</title>
+    <style>
+        :root {
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-main: #2c3e50;
+            --text-muted: #7f8c8d;
+            --primary: #3498db;
+            --accent-urgent: #e74c3c;
+            --accent-done: #2ecc71;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            margin: 0 0 10px 0;
+            font-size: 2.5rem;
+            color: #1a252f;
+        }
+
+        header p {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .dashboard {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .exam-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 6px solid var(--primary);
+            transition: transform 0.2s ease;
+        }
+
+        .exam-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .exam-card.closest {
+            border-left-color: var(--accent-urgent);
+            background: #fff5f5;
+        }
+
+        .exam-card.completed {
+            border-left-color: var(--accent-done);
+            opacity: 0.7;
+        }
+
+        .exam-info h2 {
+            margin: 0 0 5px 0;
+            font-size: 1.4rem;
+        }
+
+        .exam-info .date-string {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+
+        .countdown {
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .countdown-timer {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .exam-card.closest .countdown-timer {
+            color: var(--accent-urgent);
+        }
+
+        .exam-card.completed .countdown-timer {
+            color: var(--accent-done);
+        }
+
+        .countdown-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        @media (max-width: 600px) {
+            .exam-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            .countdown {
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>HKDSE 2026 Countdown</h1>
+        <p>Personalized Exam Schedule & Remaining Time Tracker</p>
+    </header>
+
+    <div class="dashboard" id="countdown-dashboard">
+        <!-- Exam cards will be dynamically injected here via JS -->
+    </div>
+
+    <script>
+        // Exam schedule data derived directly from the official 2026 HKDSE Timetable PDF
+        const examSchedule = [
+            { name: "Chinese Language (中國語文 一、二)", date: new Date("2026-04-09T08:30:00") },
+            { name: "English Language (英國語文 一、二)", date: new Date("2026-04-10T08:30:00") },
+            { name: "Mathematics Compulsory Part (數學 必修部分)", date: new Date("2026-04-13T08:30:00") },
+            { name: "Chemistry (化學 一、二)", date: new Date("2026-04-16T08:30:00") },
+            { name: "Biology (生物 一、二)", date: new Date("2026-04-20T08:30:00") },
+            { name: "Physics (物理 一、二)", date: new Date("2026-04-22T08:30:00") },
+            { name: "Information & Communication Technology (資訊及通訊科技)", date: new Date("2026-04-24T08:30:00") }
+        ];
+
+        function updateCountdowns() {
+            const now = new Date();
+            const dashboard = document.getElementById("countdown-dashboard");
+            dashboard.innerHTML = ""; // Clear current list to re-render in sorted order
+
+            // Sort exams: upcoming first (closest date first), completed moved to the bottom
+            const sortedExams = [...examSchedule].sort((a, b) => {
+                const aTimeLeft = a.date - now;
+                const bTimeLeft = b.date - now;
+                
+                if (aTimeLeft < 0 && bTimeLeft >= 0) return 1;
+                if (bTimeLeft < 0 && aTimeLeft >= 0) return -1;
+                return a.date - b.date;
+            });
+
+            // Find the index of the very next active exam
+            const closestUpcomingIndex = sortedExams.findIndex(exam => exam.date - now > 0);
+
+            sortedExams.forEach((exam, index) => {
+                const timeLeft = exam.date - now;
+                let timerText = "";
+                let cardClass = "";
+                let labelText = "Time Remaining";
+
+                if (timeLeft > 0) {
+                    // Calculate days, hours, minutes, seconds
+                    const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+                    timerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+                    
+                    // Highlight the absolute closest upcoming exam
+                    if (index === closestUpcomingIndex) {
+                        cardClass = "closest";
+                        labelText = "Next Exam Up";
+                    }
+                } else {
+                    timerText = "Exam Concluded";
+                    cardClass = "completed";
+                    labelText = "Status";
+                }
+
+                // Format options for clean UI presentation
+                const dateOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+                const formattedDate = exam.date.toLocaleDateString('en-HK', dateOptions);
+
+                // Construct Card Structure
+                const card = document.createElement("div");
+                card.className = `exam-card ${cardClass}`;
+                card.innerHTML = `
+                    <div class="exam-info">
+                        <h2>${exam.name}</h2>
+                        <div class="date-string">📅 ${formattedDate}</div>
+                    </div>
+                    <div class="countdown">
+                        <div class="countdown-timer">${timerText}</div>
+                        <div class="countdown-label">${labelText}</div>
+                    </div>
+                `;
+                dashboard.appendChild(card);
+            });
+        }
+
+        // Run immediately and update every 1 second
+        updateCountdowns();
+        setInterval(updateCountdowns, 1000);
+    </script>
+</body>
+</html>
